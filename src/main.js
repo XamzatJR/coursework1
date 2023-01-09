@@ -69,14 +69,15 @@ function removeNodes(parent) {
 }
 function addUserPage(el) {
   let userPage = document.createElement('section');
+  userPage.className = 'userpage';
   userPage.innerHTML = `
-  <h1>${el.firstName} ${el.lastName}</h1>
-  <div>email: ${el.email}</div>
-  <div>phone number: ${el.phone}</div>
-  <div>Birth date: ${el.birthDate}</div>
-  <div>Address: ${el.address.city}, ${el.address.address}</div>
-  <div>Study in ${el.university}</div>
-  <div>Work in ${el.company.name} as ${el.company.title} in ${el.company.department} department.</div>
+  <h1 class="title">${el.firstName} ${el.lastName}</h1>
+  <div class="subtitle">email: ${el.email}</div>
+  <div class="subtitle">phone number: ${el.phone}</div>
+  <div class="subtitle">Birth date: ${el.birthDate}</div>
+  <div class="subtitle">Address: ${el.address.city}, ${el.address.address}</div>
+  <div class="subtitle">Study in ${el.university}</div>
+  <div class="subtitle">Work in ${el.company.name} as <em>${el.company.title}</em> in ${el.company.department} department.</div>
   `;
   document.querySelector('main').remove();
   document.body.append(userPage);
