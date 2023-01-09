@@ -71,6 +71,7 @@ function addUserPage(el) {
   let userPage = document.createElement('section');
   userPage.className = 'userpage';
   userPage.innerHTML = `
+  <img class="userpage__img" src="${el.image}" alt="" />
   <h1 class="title">${el.firstName} ${el.lastName}</h1>
   <div class="subtitle">email: ${el.email}</div>
   <div class="subtitle">phone number: ${el.phone}</div>
