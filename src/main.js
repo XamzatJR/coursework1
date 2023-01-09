@@ -1,28 +1,29 @@
 const usersList = document.querySelector('.users');
 const searchBar = document.querySelector('#search-bar');
+const main = document.querySelector('main');
+
 let timerID = null;
 document.addEventListener('DOMContentLoaded', async () => {
   let users = await fetchUsers();
-  addUsers(users);
+  addUsers(users, usersList);
   searchBar.addEventListener('input', async ($event) => {
     clearTimeout(timerID);
     if ($event.target.value === '') {
-      removeUsers(usersList);
+      removeNodes(usersList);
       users = await fetchUsers();
-      addUsers(users);
+      addUsers(users, usersList);
       return;
     }
     timerID = setTimeout(() => {
       fetch(`https://dummyjson.com/users/search?q=${$event.target.value}`)
         .then((data) => data.json())
         .then((value) => {
-          removeUsers(usersList);
+          removeNodes(usersList);
           users = value.users;
-          addUsers(users);
+          addUsers(users, usersList);
         })
         .catch(() => {
-          let main = document.querySelector('main');
-          removeUsers(main);
+          removeNodes(main);
           let err = document.createElement('h2');
           err.textContent = 'No users found';
           main.append(err);
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, 350);
   });
 });
-function addUser(el) {
+function addUser(el, usersList) {
   let userItem = document.createElement('li');
   userItem.innerHTML = `
   <img class="user__img" src="${el.image}" alt="">
@@ -48,6 +49,7 @@ function addUser(el) {
   `;
   userItem.id = el.id;
   userItem.className = 'user';
+  userItem.addEventListener('click', () => addUserPage(el));
   usersList.append(userItem);
 }
 
@@ -56,12 +58,47 @@ function fetchUsers() {
     .then((data) => data.json())
     .then((users) => users.users);
 }
-function addUsers(users) {
-  users.forEach((el) => addUser(el));
+function addUsers(users, usersList) {
+  users.forEach((el) => addUser(el, usersList));
 }
-function removeUsers(parent) {
+function removeNodes(parent) {
   let childNodes = parent.childNodes;
   for (let child of childNodes) {
     child.remove();
   }
+}
+function addUserPage(el) {
+  let userPage = document.createElement('section');
+  userPage.innerHTML = `
+  <h1>${el.firstName} ${el.lastName}</h1>
+  <div>email: ${el.email}</div>
+  <div>phone number: ${el.phone}</div>
+  <div>Birth date: ${el.birthDate}</div>
+  <div>Address: ${el.address.city}, ${el.address.address}</div>
+  <div>Study in ${el.university}</div>
+  <div>Work in ${el.company.name} as ${el.company.title} in ${el.company.department} department.</div>
+  `;
+  document.querySelector('main').remove();
+  document.body.append(userPage);
+  window.history.pushState(el.id, `${el.firstName} ${el.lastName}`, `/user/${el.username}`);
+}
+window.onpopstate = (event) => {
+  if (event.state === null) {
+    document.querySelector('section').remove();
+    const usersList = mainPage();
+    fetchUsers().then((users) => addUsers(users, usersList));
+  }
+};
+function mainPage() {
+  const usersList = document.createElement('ul');
+  const main = document.createElement('main');
+  const title = document.createElement('h1');
+  title.textContent = 'Users';
+  title.className = 'title';
+  title.style.marginBottom = '26px';
+  usersList.className = 'users';
+
+  main.append(title, usersList);
+  document.querySelector('.container').append(main);
+  return usersList;
 }
