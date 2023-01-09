@@ -86,3 +86,19 @@ main {
   flex-direction: column;
   gap: 4px;
 }
+.userpage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 80px;
+}
+.subtitle {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  color: #151b32;
+  text-align: center;
+  max-width: 410px;
+}
